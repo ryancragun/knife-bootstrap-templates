@@ -1,0 +1,59 @@
+bash -c '
+<%= "export http_proxy=\"#{knife_config[:bootstrap_proxy]}\"" if knife_config[:bootstrap_proxy] -%>
+
+if [ ! -f /usr/bin/chef-client ]; then
+  tmp_dir=$(mktemp -d) || exit 1
+  pushd "$tmp_dir"
+
+  yum install -y wget
+
+  wget <%= "--proxy=on " if knife_config[:bootstrap_proxy] %>--no-check-certificate https://s3-us-west-2.amazonaws.com/ancient-images/chef.tgz
+  tar zxvf chef.tgz
+  rpm -i --nodeps --force *.rpm
+
+  popd
+  rm -r "$tmp_dir"
+fi
+
+cat > /etc/profile.d/ruby.sh <<'EOP'
+GEM_HOME=/var/lib/gems/1.9/
+GEM_PATH=/var/lib/gems/1.9/
+export GEM_HOME GEM_PATH
+EOP
+chmod 755 /etc/profile.d/ruby.sh
+. /etc/profile.d/ruby.sh
+
+mkdir -p /etc/chef
+
+cat > /etc/chef/validation.pem <<'EOP'
+<%= validation_key %>
+EOP
+chmod 0600 /etc/chef/validation.pem
+
+<% if encrypted_data_bag_secret -%>
+cat > /etc/chef/encrypted_data_bag_secret <<'EOP'
+<%= encrypted_data_bag_secret %>
+EOP
+chmod 0600 /etc/chef/encrypted_data_bag_secret
+<% end -%>
+
+<%# Generate Ohai Hints -%>
+<% unless @chef_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
+mkdir -p /etc/chef/ohai/hints
+
+<% @chef_config[:knife][:hints].each do |name, hash| -%>
+cat > /etc/chef/ohai/hints/<%= name %>.json <<'EOP'
+<%= hash.to_json %>
+EOP
+<% end -%>
+<% end -%>
+
+cat > /etc/chef/client.rb <<'EOP'
+<%= config_content %>
+EOP
+
+cat > /etc/chef/first-boot.json <<'EOP'
+<%= first_boot.to_json %>
+EOP
+
+<%= start_chef %>'
