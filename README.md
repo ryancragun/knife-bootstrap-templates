@@ -5,10 +5,10 @@ A repo that contains Chef knife bootstrap templates for strange Distro's that ar
 
 ## Templates
 
-CentOS 4.9 :thumbsdown: | Both Ruby installs will overwrite the :poop: system Ruby (1.8.1).  Omnibus packages would require their own omnibus-software repo with compilable dependencies.  That's not gonna happen with ggc 3.4.6.
+CentOS 4.9 :thumbsdown: | :warning: These will overwrite the :poop: system Ruby (1.8.1).  Omnibus packages would require their own omnibus-software repo with compilable dependencies.  That's not gonna happen with ggc 3.4.6.
 ------------------------|--------------------
 centos4-rpm | Installs Ruby and Chef via RPMs
-cenots4-gem | Installs Ruby via an RPM and chef as a gem.  
+centos4-gem | Installs Ruby via an RPM and chef as a gem
 ## Installation
 
 ```shell
