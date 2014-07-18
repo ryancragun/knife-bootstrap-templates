@@ -3,6 +3,12 @@
 ## Description
 A repo that contains Chef knife bootstrap templates for strange Distro's that aren't supported out of the box.
 
+## Templates
+
+CentOS 4.9 :thumbsdown: | Both Ruby installs will overwrite the :poop: system Ruby (1.8.1).  Omnibus packages would require their own omnibus-software repo with compilable dependencies.  That's not gonna happen with ggc 3.4.6.
+------------------------|--------------------
+centos4-rpm | Installs Ruby and Chef via RPMs
+cenots4-gem | Installs Ruby via an RPM and chef as a gem.  
 ## Installation
 
 ```shell
@@ -12,13 +18,11 @@ cp ./knife-bootstrap-templates/templates/* ~/.chef/bootstrap/
 ```
 
 ## Usage
-Right now I've included two templates for CentOS 4.9 :thumbsdown:.  One installs Ruby and Chef via RPMs, the other installs Ruby via an RPM and then installs the chef as a gem.  Either work just fine but beware that they'll both will overwrite the :poop: Ruby 1.8.1.  I tried to created an Omnibus package to sandbox this but that was a herd of Yak's I had not time to shave.  (ggc 3.4.6, I don't even...)
 
-To use bootstrap files you specify them with the ```--distro``` switch with knife bootstrap.
+To bootstrap with custom template you specify them with the ```--distro``` switch.
 
 ```shell
 knife bootstrap 127.0.0.1 -p 2201 --sudo -x vagrant -i ~/.ssh/vagrant --distro centos4-rpm
-
 ```
 
 or
