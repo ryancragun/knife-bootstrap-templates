@@ -7,7 +7,7 @@ ruby_dir=$(mktemp -d) || exit 1
 yaml_dir=$(mktemp -d) || exit 1
 chef_dir=$(mktemp -d) || exit 1
 rpm_dir=$(mktemp -d) || exit 1
-mkdir -p $(~/chef_pkgs)
+mkdir -p "~/chef_pkgs"
 
 cd "$tmp_dir"
 curl -Lk https://s3-us-west-2.amazonaws.com/ancient-images/yaml-0.1.6.tar.gz -o yaml.tgz
@@ -27,7 +27,7 @@ make
 make install
 make install DESTDIR="$ruby_dir"
 
-gem install --no-ri --no-rdoc --install-dir "chef_dir" chef
+gem install --no-ri --no-rdoc --install-dir "$chef_dir" chef
 gem install -y fpm
 
 cd "$rpm_dir"
